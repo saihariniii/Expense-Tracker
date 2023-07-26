@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <div class="background">
+      <div class="row">
+        <div class="card">
+          <h1 class="title-heading">Expense Tracker</h1>
+          <p class="caption">Take a note on your Expenses.</p>
+          <form onsubmit="onSaveToLocalStorage(event)">
+            <label>Choose Expense Amount:</label>
+            <br>
+            <input type="number" name="amount" id="amount">
+            <br>
+            <label>Choose Description</label>
+            <br>
+            <input type="text" id="description" name="description">
+            <br>
+            <label>Choose a category:</label>
+            <br>
+            <select name="category" id="category">
+                <option value="fuel">Fuel</option>
+                <option value="food">Food</option>
+                <option value="rent">Rent</option>
+                <option value="electricity">Electricity</option>
+                <option value="movies">Movies</option>
+            </select>
+            <br>
+            
+            <button>Submit</button>
+            
+          </form>
+        </div>
+        
+        <ul id="list-items"></ul>
+      </div>
+    </div>
+    <script>
+      function onSaveToLocalStorage(event){
+        event.preventDefault();
+        const amount=event.target.amount.value;
+        const description=event.target.description.value;
+        const category=event.target.category.value;
+        const obj={
+            amount,
+            description,
+            category
+          }
+        
+        
+        localStorage.setItem(obj.category,JSON.stringify(obj));
+        showDataOnScreen(obj);
+      }
+      function showDataOnScreen(obj){
+        const parentEl=document.getElementById("list-items");
+        const childEl=document.createElement("li");
+        childEl.textContent=obj.amount+' - '+obj.description+' - '+obj.category;
+        const deleteBtn=document.createElement("input");
+        deleteBtn.type="button";
+        deleteBtn.value="Delete";
+        deleteBtn.onclick=()=>{
+          localStorage.removeItem(obj.category);
+          parentEl.removeChild(childEl);
+        }        
+        const editBtn=document.createElement("input");
+        editBtn.type="button";
+        editBtn.value="Edit";
+        editBtn.onclick=() => {
+          localStorage.removeItem(obj.category);
+          parentEl.removeChild(childEl);
+          document.getElementById("amount").value=obj.amount;
+          document.getElementById("description").value=obj.description;
+          document.getElementById("category").value=obj.category;
+
+        }
+        childEl.appendChild(deleteBtn);
+        childEl.appendChild(editBtn);
+        parentEl.appendChild(childEl);
+      }
+      
+    </script>
+  </body>
+</html>
